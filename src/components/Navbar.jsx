@@ -3,8 +3,7 @@
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-
+import { usePathname, useRouter } from "next/navigation";   
 import {
   HiHome,
   HiOutlineViewGrid,
@@ -22,6 +21,7 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();  
 
   useEffect(() => {
     const checkAuth = () => {
@@ -30,8 +30,6 @@ export default function Navbar() {
     };
 
     checkAuth();
-
-    // Optional: you can add a storage listener if you want to react to cookie changes from other tabs
     window.addEventListener("storage", checkAuth);
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
@@ -42,13 +40,23 @@ export default function Navbar() {
     setMenuOpen(false);
     toast.success("Logged out successfully");
     router.push("/login");
-    // Optional: router.refresh() if you use server components that depend on cookies
   };
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const navLinkClass =
-    "flex items-center gap-2 py-2 px-3 rounded-md hover:bg-gray-100 hover:text-blue-700 transition-colors font-medium text-gray-700";
+  const isActive = (path) => {
+    if (path === "/") return pathname === "/";
+    return pathname.startsWith(path);
+  };
+
+  const activeLinkClass = "text-indigo-700 font-semibold bg-indigo-50/70";
+
+  const navLinkClass = (path) =>
+    `flex items-center gap-2 py-2 px-3 rounded-md transition-colors font-medium ${
+      isActive(path)
+        ? activeLinkClass
+        : "text-gray-700 hover:bg-gray-100 hover:text-indigo-700"
+    }`;
 
   const mobileButtonClass =
     "flex items-center justify-center gap-2 px-5 py-3 font-medium rounded-lg transition-all";
@@ -60,7 +68,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-bold text-xl tracking-tight text-gray-900 hover:text-blue-700 transition-colors"
+            className={`flex items-center gap-2.5 font-bold text-xl tracking-tight transition-colors ${
+              isActive("/") ? "text-indigo-700" : "text-gray-900 hover:text-indigo-700"
+            }`}
           >
             <HiHome size={26} className="text-blue-600" />
             <span>ZIVORA</span>
@@ -68,29 +78,29 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-2 lg:gap-3">
-            <Link href="/" className={navLinkClass}>
+            <Link href="/" className={navLinkClass("/")}>
               <HiHome size={20} />
               Home
             </Link>
 
-            <Link href="/items" className={navLinkClass}>
+            <Link href="/items" className={navLinkClass("/items")}>
               <HiOutlineViewGrid size={20} />
               Items
             </Link>
 
             {isLoggedIn && (
-              <Link href="/add-item" className={navLinkClass}>
+              <Link href="/add-item" className={navLinkClass("/add-item")}>
                 <HiPlusCircle size={20} />
                 Add Item
               </Link>
             )}
 
-            <Link href="/about" className={navLinkClass}>
+            <Link href="/about" className={navLinkClass("/about")}>
               <HiInformationCircle size={20} />
               About
             </Link>
 
-            <Link href="/contact" className={navLinkClass}>
+            <Link href="/contact" className={navLinkClass("/contact")}>
               <HiMail size={20} />
               Contact
             </Link>
@@ -99,7 +109,11 @@ export default function Navbar() {
               {!isLoggedIn ? (
                 <Link
                   href="/login"
-                  className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 shadow-sm hover:shadow transition-all font-medium"
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-lg shadow-sm transition-all font-medium ${
+                    isActive("/login")
+                      ? "bg-indigo-700 text-white"
+                      : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow"
+                  }`}
                 >
                   <HiLogin size={20} />
                   Login
@@ -128,7 +142,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu */}
       <div
         className={`md:hidden bg-white border-t border-gray-100 overflow-hidden transition-all duration-300 ease-in-out ${
           menuOpen ? "max-h-[500px] py-5" : "max-h-0 py-0"
@@ -137,7 +151,7 @@ export default function Navbar() {
         <div className="px-5 flex flex-col gap-2">
           <Link
             href="/"
-            className={navLinkClass}
+            className={navLinkClass("/")}
             onClick={() => setMenuOpen(false)}
           >
             <HiHome size={22} />
@@ -146,7 +160,7 @@ export default function Navbar() {
 
           <Link
             href="/items"
-            className={navLinkClass}
+            className={navLinkClass("/items")}
             onClick={() => setMenuOpen(false)}
           >
             <HiOutlineViewGrid size={22} />
@@ -156,7 +170,7 @@ export default function Navbar() {
           {isLoggedIn && (
             <Link
               href="/add-item"
-              className={navLinkClass}
+              className={navLinkClass("/add-item")}
               onClick={() => setMenuOpen(false)}
             >
               <HiPlusCircle size={22} />
@@ -166,7 +180,7 @@ export default function Navbar() {
 
           <Link
             href="/about"
-            className={navLinkClass}
+            className={navLinkClass("/about")}
             onClick={() => setMenuOpen(false)}
           >
             <HiInformationCircle size={22} />
@@ -175,7 +189,7 @@ export default function Navbar() {
 
           <Link
             href="/contact"
-            className={navLinkClass}
+            className={navLinkClass("/contact")}
             onClick={() => setMenuOpen(false)}
           >
             <HiMail size={22} />
@@ -186,7 +200,11 @@ export default function Navbar() {
             {!isLoggedIn ? (
               <Link
                 href="/login"
-                className={`${mobileButtonClass} bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700`}
+                className={`${mobileButtonClass} ${
+                  isActive("/login")
+                    ? "bg-indigo-700 text-white"
+                    : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700"
+                }`}
                 onClick={() => setMenuOpen(false)}
               >
                 <HiLogin size={22} />

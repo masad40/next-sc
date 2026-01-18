@@ -102,8 +102,7 @@ Password: 123456
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/items-app-nextjs.git
-cd items-app-nextjs
+git clone https://github.com/masad40/next-sc.git
 ```
 
 ### 2️⃣ Install dependencies

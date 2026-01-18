@@ -29,7 +29,7 @@ export default function Login() {
 
       // Small delay for better UX + toast visibility
       setTimeout(() => {
-        router.push("/items");
+        window.location.href = "/items";
         router.refresh(); // Refresh server components & Navbar state
       }, 800);
     } else {
@@ -38,7 +38,7 @@ export default function Login() {
 
     setLoading(false);
   };
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-md w-full">

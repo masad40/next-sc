@@ -21,11 +21,11 @@ export default function Home() {
     async function fetchItems() {
       try {
         const res = await fetch("https://item-app-server.vercel.app/items", {
-          next: { revalidate: 3600 }, // ISR - revalidate every hour (production friendly)
+          next: { revalidate: 3600 }, 
         });
         if (!res.ok) throw new Error("Failed");
         const data = await res.json();
-        setItems(data.slice(0, 6)); // show more for better visual balance
+        setItems(data.slice(0, 6)); 
       } catch (err) {
         console.error(err);
       } finally {
