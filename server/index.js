@@ -64,6 +64,7 @@ let items = [
     description:"Iphone 17 pro max",
     image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRUsryy05hmT3_3zd8AUSNEqJhIwY8QeS3RdFBKVz8gSvXsP81VnvdtSI&s=10"
   },
+ 
 ];
 
 
